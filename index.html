@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UAE Climate Live 🌤️</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #8bc34a;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      color: #8bc34a;
+    }
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .weather-section {
+      background: #111;
+      border: 2px solid #2e7d32;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #a5d6a7;
+    }
+    .stat {
+      font-size: 1.2em;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🌍 UAE Climate Live 🌅</header>
+
+  <main>
+    <div id="weatherData" class="weather-section">
+      <div class="title">Loading weather…</div>
+    </div>
+  </main>
+
+  <footer style="text-align:center; padding:10px; color:#8bc34a;">
+    © 2026 Environment Dashboard
+  </footer>
+
+  <script>
+  const lat = 24.4539; // Abu Dhabi
+  const lon = 54.3773;
+
+  const container = document.getElementById("weatherData");
+
+  async function fetchWeather() {
+    const url = `
+      https://api.open-meteo.com/v1/forecast
+      ?latitude=${lat}
+      &longitude=${lon}
+      &current=temperature_2m,wind_speed_10m,uv_index
+      &daily=sunrise,sunset
+      &timezone=Asia/Dubai
+    `;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const temp = data.current.temperature_2m;
+      const wind = data.current.wind_speed_10m;
+      const uv = data.current.uv_index;
+      const sunrise = data.daily.sunrise[0].split("T")[1];
+      const sunset = data.daily.sunset[0].split("T")[1];
+
+      container.innerHTML = `
+        <div class="title">📍 UAE Climate (Live)</div>
+        <div class="stat">🌡️ Temperature: ${temp} °C</div>
+        <div class="stat">☀️ UV Index: ${uv}</div>
+        <div class="stat">💨 Wind Speed: ${wind} km/h</div>
+        <div class="stat">🌅 Sunrise: ${sunrise}</div>
+        <div class="stat">🌇 Sunset: ${sunset}</div>
+      `;
+    } catch (e) {
+      container.innerHTML = "❌ Failed to load data";
+    }
+  }
+
+  fetchWeather();
+</script>
+</body>
+</html>
